@@ -2,7 +2,6 @@ package com.jobmanagement.demo.service;
 
 import com.jobmanagement.demo.domain.JobData;
 import com.jobmanagement.demo.domain.Queue;
-import com.jobmanagement.demo.service.impl.EmailJob;
 import org.springframework.stereotype.Service;
 
 @Service

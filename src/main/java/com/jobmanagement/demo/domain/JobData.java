@@ -4,17 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.Delayed;
 
 @Getter
 @Setter
-public abstract class JobData implements Comparable<JobData> {
+public abstract class JobData implements Delayed {
 
     protected JobState jobState = JobState.QUEUED;
 
-    protected LocalDateTime scheduled;
+    protected Long delay;
 
-    public JobData(LocalDateTime scheduled){
-        this.scheduled = scheduled;
+    public JobData(Long delayInMilliSecond){
+        this.delay = System.currentTimeMillis() + delayInMilliSecond;;
     }
 
     public abstract void execute();

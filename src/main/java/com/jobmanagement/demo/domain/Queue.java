@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 @Getter
@@ -11,7 +13,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 @Component
 public class Queue {
 
-    private PriorityBlockingQueue<JobData> queue = new PriorityBlockingQueue<>();
+    private BlockingQueue<JobData> queue = new DelayQueue<>();
 
     public void addToQueue(JobData jobData){
         queue.add(jobData);

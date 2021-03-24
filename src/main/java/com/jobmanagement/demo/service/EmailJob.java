@@ -1,10 +1,10 @@
-package com.jobmanagement.demo.service.impl;
+package com.jobmanagement.demo.service;
 
 import com.jobmanagement.demo.domain.JobData;
 import com.jobmanagement.demo.domain.Queue;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class EmailJob implements Runnable {
 
     private final Queue queue;
