@@ -15,7 +15,7 @@ public class EmailJobData extends JobData {
     private String to;
     private String body;
 
-    public EmailJobData(Long delay, String from, String to, String body, Long delayInMilliseconds) {
+    public EmailJobData(Long delay, String from, String to, String body) {
         super(delay);
         this.from = from;
         this.to = to;
@@ -24,7 +24,7 @@ public class EmailJobData extends JobData {
 
     @Override
     public void execute() {
-        System.out.println("Send email");
+        System.out.println("Sent email");
     }
 
     @Override
