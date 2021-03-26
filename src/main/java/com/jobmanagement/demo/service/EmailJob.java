@@ -1,6 +1,7 @@
 package com.jobmanagement.demo.service;
 
 import com.jobmanagement.demo.converter.JobConverter;
+import com.jobmanagement.demo.domain.EmailJobData;
 import com.jobmanagement.demo.domain.JobData;
 import com.jobmanagement.demo.domain.JobState;
 import com.jobmanagement.demo.domain.Queue;
@@ -29,7 +30,7 @@ public class EmailJob implements Runnable {
         while (true) {
             try {
                 JobData jobData = queue.getQueue().take();
-                jobData.execute();
+                jobData.jobExecutionLogic();
                 JobEntity jobEntity = jobConverter.toEntity(jobData);
                 jobEntity.setStatus(JobState.SUCCESS.name());
                 jobRepository.save(jobEntity);

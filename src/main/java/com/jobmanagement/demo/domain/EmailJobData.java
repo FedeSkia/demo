@@ -23,19 +23,7 @@ public class EmailJobData extends JobData {
     }
 
     @Override
-    public void execute() {
-        System.out.println("Sent email");
-    }
-
-    @Override
-    public long getDelay(TimeUnit unit) {
-        long diff = delay - System.currentTimeMillis();
-        return unit.convert(diff, TimeUnit.MILLISECONDS);
-    }
-
-    @Override
-    public int compareTo(Delayed o) {
-        long time = delay - ((EmailJobData) o).getDelay();
-        return (int) time;
+    public void jobExecutionLogic() {
+        System.out.println("Send email to " + to);
     }
 }

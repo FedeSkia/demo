@@ -1,0 +1,65 @@
+{
+	"info": {
+		"_postman_id": "f817e56d-be43-43c4-bb2b-5e1e62c93db3",
+		"name": "demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "add job email",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"from\":\"ads\",\r\n    \"to\": \"1\",\r\n    \"body\": \"asd\",\r\n    \"delay\": \"0\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/addJob",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addJob"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add load data job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"path\": \"/whatever\",\r\n    \"delay\": \"1000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/addDataSourceJob",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addDataSourceJob"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
