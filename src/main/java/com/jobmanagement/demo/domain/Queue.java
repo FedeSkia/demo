@@ -6,17 +6,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.DelayQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 
 @Getter
 @Setter
 @Component
 public class Queue {
 
-    private BlockingQueue<JobData> queue = new DelayQueue<>();
+    private BlockingQueue<Job> queue = new DelayQueue<>();
 
-    public void addToQueue(JobData jobData){
-        queue.add(jobData);
+    public void addToQueue(Job job){
+        queue.add(job);
     }
 
 }

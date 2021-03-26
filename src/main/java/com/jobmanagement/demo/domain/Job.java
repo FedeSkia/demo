@@ -3,19 +3,18 @@ package com.jobmanagement.demo.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
-public abstract class JobData implements Delayed {
+public abstract class Job implements Delayed {
 
     protected JobState jobState = JobState.QUEUED;
 
     protected Long delay;
 
-    public JobData(Long delayInMilliSecond){
+    public Job(Long delayInMilliSecond) {
         this.delay = System.currentTimeMillis() + delayInMilliSecond;;
     }
 
@@ -29,7 +28,7 @@ public abstract class JobData implements Delayed {
 
     @Override
     public int compareTo(Delayed o) {
-        long time = delay - ((JobData) o).getDelay();
+        long time = delay - ((Job) o).getDelay();
         return (int) time;
     }
 

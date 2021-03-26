@@ -1,7 +1,7 @@
 package com.jobmanagement.demo.controller;
 
-import com.jobmanagement.demo.domain.EmailJobData;
-import com.jobmanagement.demo.domain.LoadFromDataSourceData;
+import com.jobmanagement.demo.domain.EmailJob;
+import com.jobmanagement.demo.domain.LoadFromDataSource;
 import com.jobmanagement.demo.service.JobManager;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,14 +16,14 @@ public class JobController {
         this.jobManager = jobManager;
     }
 
-    @PostMapping("/addJob")
-    public void addJob(@RequestBody EmailJobData addJobDTO) {
+    @PostMapping("/add-email-job")
+    public void addEmailJob(@RequestBody EmailJob addJobDTO) {
         jobManager.addJob(addJobDTO);
     }
 
-    @PostMapping("/addDataSourceJob")
-    public void addJob(@RequestBody LoadFromDataSourceData addJobDTO) {
-        jobManager.addJob(addJobDTO);
+    @PostMapping("/add-load-job")
+    public void addDataSourceJob(@RequestBody LoadFromDataSource dataSource) {
+        jobManager.addJob(dataSource);
     }
 
 }

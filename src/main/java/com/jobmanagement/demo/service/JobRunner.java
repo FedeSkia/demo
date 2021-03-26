@@ -1,8 +1,7 @@
 package com.jobmanagement.demo.service;
 
 import com.jobmanagement.demo.converter.JobConverter;
-import com.jobmanagement.demo.domain.EmailJobData;
-import com.jobmanagement.demo.domain.JobData;
+import com.jobmanagement.demo.domain.Job;
 import com.jobmanagement.demo.domain.JobState;
 import com.jobmanagement.demo.domain.Queue;
 import com.jobmanagement.demo.repository.entities.JobEntity;
@@ -10,7 +9,7 @@ import com.jobmanagement.demo.repository.entities.JobRepository;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EmailJob implements Runnable {
+public class JobRunner implements Runnable {
 
     private final Queue queue;
 
@@ -18,7 +17,7 @@ public class EmailJob implements Runnable {
 
     private final JobConverter jobConverter;
 
-    public EmailJob(Queue queue, JobRepository jobRepository, JobConverter jobConverter) {
+    public JobRunner(Queue queue, JobRepository jobRepository, JobConverter jobConverter) {
         this.queue = queue;
         this.jobRepository = jobRepository;
         this.jobConverter = jobConverter;
@@ -29,9 +28,9 @@ public class EmailJob implements Runnable {
         System.out.println("Polling...");
         while (true) {
             try {
-                JobData jobData = queue.getQueue().take();
-                jobData.jobExecutionLogic();
-                JobEntity jobEntity = jobConverter.toEntity(jobData);
+                Job job = queue.getQueue().take();
+                job.jobExecutionLogic();
+                JobEntity jobEntity = jobConverter.toEntity(job);
                 jobEntity.setStatus(JobState.SUCCESS.name());
                 jobRepository.save(jobEntity);
             } catch (Exception e) {
