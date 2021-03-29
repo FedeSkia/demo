@@ -48,10 +48,10 @@ class JobManagerTest {
 
     @Test
     public void addAJobWithZeroDelayWillBeImmediatelyExecuted() throws InterruptedException {
-        Job emailJobData = new EmailJob(0L, "federico", "", "");
+        Job emailJobData = new EmailJob(0L, "federico", "payoneer", "");
         jobManager.addJob(emailJobData);
         Long countJobs = jobRepository.count();
-        assertEquals(countJobs, 1);
+        assertEquals(1, countJobs);
     }
 
 }

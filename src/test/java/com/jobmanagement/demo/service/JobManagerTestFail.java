@@ -8,6 +8,7 @@ import com.jobmanagement.demo.domain.JobState;
 import com.jobmanagement.demo.domain.Queue;
 import com.jobmanagement.demo.repository.entities.JobEntity;
 import com.jobmanagement.demo.repository.entities.JobRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.ClassRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,10 +22,13 @@ import java.util.List;
 import java.util.concurrent.DelayQueue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Slf4j
 class JobManagerTestFail {
 
     @ClassRule
@@ -51,12 +55,16 @@ class JobManagerTestFail {
     }
 
     @Test
-    public void whenJobFailsPersistsWithFAILEDState() throws InterruptedException {
-        when(delayQueue.take()).thenThrow(new Exception());
-        Job emailJobData = new EmailJob(0L, "federico", "", "");
+    public void whenJobFailsPersistsWithFAILEDState() {
+        Job emailJobData = Mockito.mock(EmailJob.class);
+        when(emailJobData.getDelay()).thenReturn(0L);
+        when(emailJobData.getDelay(any())).thenReturn(0L);
+        when(emailJobData.getJobState()).thenReturn(JobState.FAILED);
+        doThrow(new RuntimeException()).when(emailJobData).jobExecutionLogic();
         jobManager.addJob(emailJobData);
         List<JobEntity> jobList = jobRepository.findAll();
-        assertEquals(jobList.stream().findFirst().get().getStatus(), JobState.FAILED.name());
+        jobList.forEach(System.out::println);
+        assertEquals(JobState.FAILED.name(), jobList.stream().findFirst().get().getStatus());
     }
 
 }
