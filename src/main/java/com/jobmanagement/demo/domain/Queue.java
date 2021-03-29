@@ -12,7 +12,11 @@ import java.util.concurrent.DelayQueue;
 @Component
 public class Queue {
 
-    private BlockingQueue<Job> queue = new DelayQueue<>();
+    private BlockingQueue<Job> queue;
+
+    public Queue(DelayQueue delayQueue) {
+        this.queue = delayQueue;
+    }
 
     public void addToQueue(Job job){
         queue.add(job);

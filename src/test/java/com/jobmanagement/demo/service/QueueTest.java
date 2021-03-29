@@ -5,15 +5,16 @@ import com.jobmanagement.demo.domain.Job;
 import com.jobmanagement.demo.domain.Queue;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.concurrent.DelayQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 class QueueTest {
 
-    @Autowired
-    Queue queue;
+    Queue queue = new Queue(new DelayQueue());
 
     @Test
     public void checkQueueOrdering() throws InterruptedException {

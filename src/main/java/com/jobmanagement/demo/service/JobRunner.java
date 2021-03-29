@@ -1,6 +1,7 @@
 package com.jobmanagement.demo.service;
 
 import com.jobmanagement.demo.converter.JobConverter;
+import com.jobmanagement.demo.domain.EmailJob;
 import com.jobmanagement.demo.domain.Job;
 import com.jobmanagement.demo.domain.JobState;
 import com.jobmanagement.demo.domain.Queue;
@@ -27,19 +28,24 @@ public class JobRunner implements Runnable {
     public void run() {
         System.out.println("Polling...");
         while (true) {
+            Job job = null;
             try {
-                Job job = queue.getQueue().take();
+                job = queue.getQueue().take();
                 job.jobExecutionLogic();
-                JobEntity jobEntity = jobConverter.toEntity(job);
-                jobEntity.setStatus(JobState.SUCCESS.name());
-                jobRepository.save(jobEntity);
+                saveToJobTable(job, JobState.SUCCESS.name());
             } catch (Exception e) {
-                JobEntity jobEntity = new JobEntity();
-                jobEntity.setStatus(JobState.FAILED.name());
-                jobEntity.setType("email");
-                jobRepository.save(jobEntity);
+                saveToJobTable(job, JobState.FAILED.name());
             }
         }
+    }
+
+    private void saveToJobTable(Job job, String state) {
+        if( job == null ) {
+            job = new EmailJob(0L,"", "", "");
+        }
+        JobEntity jobEntity = jobConverter.toEntity(job);
+        jobEntity.setStatus(state);
+        jobRepository.save(jobEntity);
     }
 
 }
