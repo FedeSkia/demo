@@ -5,47 +5,53 @@ import com.jobmanagement.demo.domain.EmailJob;
 import com.jobmanagement.demo.domain.Job;
 import com.jobmanagement.demo.domain.JobState;
 import com.jobmanagement.demo.domain.Queue;
+import com.jobmanagement.demo.exception.JobFailedException;
 import com.jobmanagement.demo.repository.entities.JobEntity;
 import com.jobmanagement.demo.repository.entities.JobRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@Component
-public class JobRunner implements Runnable {
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.DelayQueue;
 
-    private final Queue queue;
+@Slf4j
+@Component
+public class JobRunner implements Runnable, IRollback {
+
+    private final BlockingQueue<Job> queue;
 
     private final JobRepository jobRepository;
 
-    private final JobConverter jobConverter;
-
-    public JobRunner(Queue queue, JobRepository jobRepository, JobConverter jobConverter) {
+    public JobRunner(BlockingQueue<Job> queue, JobRepository jobRepository) {
         this.queue = queue;
         this.jobRepository = jobRepository;
-        this.jobConverter = jobConverter;
     }
 
     @Override
     public void run() {
         System.out.println("Polling...");
         while (true) {
-            Job job = null;
             try {
-                job = queue.getQueue().take();
+                Job job = queue.getQueue().take();
                 job.jobExecutionLogic();
-                saveToJobTable(job, JobState.SUCCESS.name());
-            } catch (Exception e) {
-                saveToJobTable(job, JobState.FAILED.name());
+                saveToJobTable(JobState.SUCCESS.name());
+            } catch (InterruptedException e) {
+                log.error(e.getMessage());
+            } catch (JobFailedException e) {
+                e.getJob().rollback();
+                saveToJobTable(JobState.FAILED.name());
             }
         }
     }
 
-    private void saveToJobTable(Job job, String state) {
-        if( job == null ) {
-            job = new EmailJob(0L,"", "", "");
-        }
-        JobEntity jobEntity = jobConverter.toEntity(job);
+    private void saveToJobTable(String state) {
+        JobEntity jobEntity = new JobEntity();
         jobEntity.setStatus(state);
         jobRepository.save(jobEntity);
     }
 
+    @Override
+    public void rollback() {
+        System.out.println("Rollback");
+    }
 }

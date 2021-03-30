@@ -27,22 +27,19 @@ class JobManagerTest {
     @ClassRule
     public static MySQLContainer mySQLContainer = TestMysqlDatabase.getInstance();
 
-    Queue queue;
+    DelayQueue queue;
 
     JobManager jobManager;
 
     @Autowired
     JobRepository jobRepository;
 
-    JobConverter jobConverter;
-
     JobRunner jobRunner;
 
     @BeforeEach
     public void prepareTests() {
-        queue = new Queue(new DelayQueue());
-        jobConverter = new JobConverter();
-        jobRunner = new JobRunner(queue, jobRepository, jobConverter);
+        queue = new DelayQueue();
+        jobRunner = new JobRunner(queue, jobRepository);
         jobManager = new JobManager(jobRunner, queue);
     }
 

@@ -1,5 +1,7 @@
 package com.jobmanagement.demo.domain;
 
+import com.jobmanagement.demo.exception.JobFailedException;
+import com.jobmanagement.demo.service.IRollback;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
-public abstract class Job implements Delayed {
+public abstract class Job implements Delayed, IRollback {
 
     protected JobState jobState = JobState.QUEUED;
 
@@ -18,7 +20,7 @@ public abstract class Job implements Delayed {
         this.delay = System.currentTimeMillis() + delayInMilliSecond;;
     }
 
-    public abstract void jobExecutionLogic();
+    public abstract void jobExecutionLogic() throws JobFailedException;
 
     @Override
     public long getDelay(TimeUnit unit) {

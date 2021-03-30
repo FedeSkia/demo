@@ -1,5 +1,6 @@
 package com.jobmanagement.demo.domain;
 
+import com.jobmanagement.demo.exception.JobFailedException;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +20,13 @@ public class EmailJob extends Job {
     }
 
     @Override
-    public void jobExecutionLogic() {
+    public void jobExecutionLogic() throws JobFailedException {
         System.out.println("Send email to " + to);
+        throw new JobFailedException(this);
+    }
+
+    @Override
+    public void rollback() {
+        System.out.println("Rollback email sent");
     }
 }

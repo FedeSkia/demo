@@ -5,11 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LoadFromDataSource extends Job {
+public class LoadFromDataSourceJob extends Job {
 
     private String pathToFile;
 
-    public LoadFromDataSource(Long delay, String pathToFile){
+    public LoadFromDataSourceJob(Long delay, String pathToFile){
         super(delay);
         this.pathToFile = pathToFile;
     }
@@ -17,5 +17,10 @@ public class LoadFromDataSource extends Job {
     @Override
     public void jobExecutionLogic() {
         System.out.println("Loading data from path " + pathToFile);
+    }
+
+    @Override
+    public void rollback() {
+        System.out.println("Rollback SQL");
     }
 }

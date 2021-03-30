@@ -6,6 +6,7 @@ import com.jobmanagement.demo.domain.EmailJob;
 import com.jobmanagement.demo.domain.Job;
 import com.jobmanagement.demo.domain.JobState;
 import com.jobmanagement.demo.domain.Queue;
+import com.jobmanagement.demo.exception.JobFailedException;
 import com.jobmanagement.demo.repository.entities.JobEntity;
 import com.jobmanagement.demo.repository.entities.JobRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,7 @@ import java.util.concurrent.DelayQueue;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -43,24 +43,22 @@ class JobManagerTestFail {
     @Autowired
     JobRepository jobRepository;
 
-    JobConverter jobConverter;
-
     JobRunner jobRunner;
 
     @BeforeEach
     public void prepareTests() {
-        jobConverter = new JobConverter();
-        jobRunner = new JobRunner(queue, jobRepository, jobConverter);
+        jobRunner = new JobRunner(queue, jobRepository);
         jobManager = new JobManager(jobRunner, queue);
     }
 
     @Test
-    public void whenJobFailsPersistsWithFAILEDState() {
+    public void whenJobFailsPersistsWithFAILEDState() throws JobFailedException {
         Job emailJobData = Mockito.mock(EmailJob.class);
         when(emailJobData.getDelay()).thenReturn(0L);
         when(emailJobData.getDelay(any())).thenReturn(0L);
+        doCallRealMethod().when(emailJobData).rollback();
         when(emailJobData.getJobState()).thenReturn(JobState.FAILED);
-        doThrow(new RuntimeException()).when(emailJobData).jobExecutionLogic();
+        doThrow(new JobFailedException(emailJobData)).when(emailJobData).jobExecutionLogic();
         jobManager.addJob(emailJobData);
         List<JobEntity> jobList = jobRepository.findAll();
         jobList.forEach(System.out::println);
