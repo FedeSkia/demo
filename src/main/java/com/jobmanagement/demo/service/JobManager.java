@@ -1,26 +1,21 @@
 package com.jobmanagement.demo.service;
 
 import com.jobmanagement.demo.domain.Job;
-import com.jobmanagement.demo.domain.Queue;
 import org.springframework.stereotype.Service;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.DelayQueue;
 
 @Service
 public class JobManager {
 
-    private final BlockingQueue<Job> queue;
-
     private final Thread thread;
+    private final JobRunner jobRunner;
 
     public JobManager(JobRunner jobRunner) {
+        this.jobRunner = jobRunner;
         this.thread = new Thread(jobRunner);
-        this.queue = new DelayQueue<>();
     }
 
     public void addJob(Job job) {
-        queue.add(job);
+        jobRunner.getQueue().add(job);
         startIfNotAlready();
     }
 

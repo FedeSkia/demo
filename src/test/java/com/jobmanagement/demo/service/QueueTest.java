@@ -2,27 +2,30 @@ package com.jobmanagement.demo.service;
 
 import com.jobmanagement.demo.domain.EmailJob;
 import com.jobmanagement.demo.domain.Job;
-import com.jobmanagement.demo.domain.Queue;
+import com.jobmanagement.demo.repository.entities.JobRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.concurrent.DelayQueue;
+import java.util.concurrent.BlockingQueue;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class QueueTest {
 
-    Queue queue = new Queue(new DelayQueue());
+    @Autowired
+    JobRepository jobRepository;
+
+    JobRunner jobRunner = new JobRunner(jobRepository);
 
     @Test
     public void checkQueueOrdering() throws InterruptedException {
         Job twoSecondsDelayJob = new EmailJob(2000l, "", "", "");
         Job fourSecondsDelayJob = new EmailJob(4000l, "", "", "");
-        queue.addToQueue(fourSecondsDelayJob);
-        queue.addToQueue(twoSecondsDelayJob);
-        Job firstQueueElement = queue.getQueue().take();
+        BlockingQueue<Job> queue = jobRunner.getQueue();
+        queue.add(fourSecondsDelayJob);
+        queue.add(twoSecondsDelayJob);
+
+        Job firstQueueElement = queue.take();
         assertThat(firstQueueElement).isEqualTo(twoSecondsDelayJob);
     }
 
@@ -30,9 +33,10 @@ class QueueTest {
     public void checkQueueOrderingInverseInsert() throws InterruptedException {
         Job twoSecondsDelayJob = new EmailJob(2000l, "", "", "");
         Job fourSecondsDelayJob = new EmailJob(4000l, "", "", "");
-        queue.addToQueue(twoSecondsDelayJob);
-        queue.addToQueue(fourSecondsDelayJob);
-        Job firstQueueElement = queue.getQueue().take();
+        BlockingQueue<Job> queue = jobRunner.getQueue();
+        queue.add(twoSecondsDelayJob);
+        queue.add(fourSecondsDelayJob);
+        Job firstQueueElement = queue.take();
         assertThat(firstQueueElement).isEqualTo(twoSecondsDelayJob);
     }
 

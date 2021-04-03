@@ -1,11 +1,9 @@
 package com.jobmanagement.demo.service;
 
 import com.jobmanagement.demo.TestMysqlDatabase;
-import com.jobmanagement.demo.converter.JobConverter;
 import com.jobmanagement.demo.domain.EmailJob;
 import com.jobmanagement.demo.domain.Job;
 import com.jobmanagement.demo.domain.JobState;
-import com.jobmanagement.demo.domain.Queue;
 import com.jobmanagement.demo.exception.JobFailedException;
 import com.jobmanagement.demo.repository.entities.JobEntity;
 import com.jobmanagement.demo.repository.entities.JobRepository;
@@ -34,10 +32,6 @@ class JobManagerTestFail {
     @ClassRule
     public static MySQLContainer mySQLContainer = TestMysqlDatabase.getInstance();
 
-    DelayQueue delayQueue = new DelayQueue();
-
-    Queue queue = new Queue(delayQueue);
-
     JobManager jobManager;
 
     @Autowired
@@ -47,8 +41,8 @@ class JobManagerTestFail {
 
     @BeforeEach
     public void prepareTests() {
-        jobRunner = new JobRunner(queue, jobRepository);
-        jobManager = new JobManager(jobRunner, queue);
+        jobRunner = new JobRunner(jobRepository);
+        jobManager = new JobManager(jobRunner);
     }
 
     @Test
