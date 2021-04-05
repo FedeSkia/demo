@@ -33,19 +33,21 @@ public class JobRunner implements Runnable, IRollback {
             try {
                 Job job = queue.take();
                 job.jobExecutionLogic();
-                saveToJobTable(JobState.SUCCESS.name());
+                saveToJobTable(JobState.SUCCESS.name(), job.getJobType());
             } catch (InterruptedException e) {
                 log.error(e.getMessage());
             } catch (JobFailedException e) {
                 e.getJob().rollback();
-                saveToJobTable(JobState.FAILED.name());
+                log.error(e.getMessage());
+                saveToJobTable(JobState.FAILED.name(), e.getJob().getJobType());
             }
         }
     }
 
-    private void saveToJobTable(String state) {
+    private void saveToJobTable(String state, String jobType) {
         JobEntity jobEntity = new JobEntity();
         jobEntity.setStatus(state);
+        jobEntity.setType(jobType);
         jobRepository.save(jobEntity);
     }
 

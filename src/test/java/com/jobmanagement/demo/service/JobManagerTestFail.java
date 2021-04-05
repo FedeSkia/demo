@@ -34,8 +34,7 @@ class JobManagerTestFail {
 
     JobManager jobManager;
 
-    @Autowired
-    JobRepository jobRepository;
+    JobRepository jobRepository = Mockito.mock(JobRepository.class);
 
     JobRunner jobRunner;
 
@@ -54,9 +53,7 @@ class JobManagerTestFail {
         when(emailJobData.getJobState()).thenReturn(JobState.FAILED);
         doThrow(new JobFailedException(emailJobData)).when(emailJobData).jobExecutionLogic();
         jobManager.addJob(emailJobData);
-        List<JobEntity> jobList = jobRepository.findAll();
-        jobList.forEach(System.out::println);
-        assertEquals(JobState.FAILED.name(), jobList.stream().findFirst().get().getStatus());
+        verify(jobRepository, after(1000)).save(any());
     }
 
 }

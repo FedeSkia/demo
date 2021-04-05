@@ -20,9 +20,13 @@ public class EmailJob extends Job {
     }
 
     @Override
+    public String getJobType() {
+        return "EmailJob";
+    }
+
+    @Override
     public void jobExecutionLogic() throws JobFailedException {
         System.out.println("Send email to " + to);
-        throw new JobFailedException(this);
     }
 
     @Override

@@ -20,6 +20,8 @@ public abstract class Job implements Delayed, IRollback {
         this.delay = System.currentTimeMillis() + delayInMilliSecond;;
     }
 
+    public abstract String getJobType();
+
     public abstract void jobExecutionLogic() throws JobFailedException;
 
     @Override

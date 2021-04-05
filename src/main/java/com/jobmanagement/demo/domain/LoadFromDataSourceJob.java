@@ -15,6 +15,11 @@ public class LoadFromDataSourceJob extends Job {
     }
 
     @Override
+    public String getJobType() {
+        return "loadFromData";
+    }
+
+    @Override
     public void jobExecutionLogic() {
         System.out.println("Loading data from path " + pathToFile);
     }
