@@ -14,7 +14,7 @@ import java.util.concurrent.DelayQueue;
 
 @Slf4j
 @Component
-public class JobRunner implements Runnable, IRollback {
+public class JobRunner implements Runnable {
 
     @Getter
     private final BlockingQueue<Job> queue;
@@ -51,8 +51,4 @@ public class JobRunner implements Runnable, IRollback {
         jobRepository.save(jobEntity);
     }
 
-    @Override
-    public void rollback() {
-        System.out.println("Rollback");
-    }
 }
